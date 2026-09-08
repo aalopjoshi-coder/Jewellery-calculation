@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#153a30">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CM Tharadvala">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>CM Tharadvala Jewellers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b1f1a;
+    --paper:#f6f4ee;
+    --panel:#ffffff;
+    --line:#e2ded2;
+    --gold:#a9791f;
+    --gold-deep:#7c581a;
+    --emerald:#1f4a3d;
+    --emerald-deep:#153a30;
+    --silver:#7a8288;
+    --danger:#8c3b32;
+    --shadow: 0 10px 30px rgba(21,58,48,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 60px;}
+
+  /* ---------- Header ---------- */
+  header{
+    background: linear-gradient(180deg,var(--emerald) 0%,var(--emerald-deep) 100%);
+    color:#f6f4ee;
+    padding:28px 20px 22px;
+    text-align:center;
+    border-bottom:3px solid var(--gold);
+  }
+  header .mark{
+    display:inline-block;
+    width:34px;height:34px;
+    border:1.5px solid var(--gold);
+    border-radius:50%;
+    line-height:31px;
+    font-family:'Playfair Display',serif;
+    font-size:15px;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  header h1{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:1.5rem;
+    letter-spacing:0.5px;
+    margin:0;
+  }
+  header p{
+    margin:6px 0 0;
+    font-size:0.78rem;
+    color:#cfe0d8;
+    letter-spacing:1.5px;
+  }
+
+  /* ---------- Password gate ---------- */
+  #gate{
+    position:fixed;inset:0;
+    background:var(--emerald-deep);
+    display:flex;align-items:center;justify-content:center;
+    z-index:100;
+    padding:24px;
+  }
+  .gate-card{
+    background:var(--panel);
+    border-radius:14px;
+    padding:36px 28px;
+    width:100%;max-width:360px;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .gate-card .mark{
+    width:44px;height:44px;line-height:41px;
+    border:1.5px solid var(--gold);border-radius:50%;
+    font-family:'Playfair Display',serif;font-size:19px;color:var(--gold-deep);
+    margin:0 auto 14px;
+  }
+  .gate-card h2{
+    font-family:'Playfair Display',serif;
+    margin:0 0 4px;font-size:1.2rem;color:var(--emerald-deep);
+  }
+  .gate-card p{margin:0 0 20px;color:#6b6b63;font-size:0.85rem;}
+  .gate-card input{
+    width:100%;padding:13px 14px;border:1px solid var(--line);
+    border-radius:8px;font-size:1rem;text-align:center;margin-bottom:12px;
+    letter-spacing:2px;
+  }
+  .gate-card button{
+    width:100%;padding:13px;border:none;border-radius:8px;
+    background:var(--emerald);color:#fff;font-weight:600;font-size:0.95rem;
+    cursor:pointer;letter-spacing:0.5px;
+  }
+  .gate-card button:active{background:var(--emerald-deep);}
+  #gateError{color:var(--danger);font-size:0.82rem;min-height:18px;margin-top:8px;}
+
+  /* ---------- Main content ---------- */
+  main{padding:20px 16px 0;display:none;}
+
+  .metal-toggle{
+    display:flex;background:#eae6d9;border-radius:10px;padding:4px;margin-bottom:18px;
+    gap:4px;
+  }
+  .metal-toggle button{
+    flex:1;padding:11px 4px;border:none;border-radius:7px;background:transparent;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:0.85rem;color:#6b6b63;
+    cursor:pointer;transition:background .15s,color .15s;
+  }
+  .metal-toggle button.active{background:var(--panel);color:var(--emerald-deep);box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+  .metal-toggle button[data-metal="gold"].active{color:var(--gold-deep);}
+  .metal-toggle button[data-metal="silver"].active{color:var(--silver);}
+
+  .card{
+    background:var(--panel);
+    border-radius:14px;
+    padding:22px 18px;
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .card h3{
+    font-family:'Playfair Display',serif;
+    font-size:1.02rem;
+    color:var(--emerald-deep);
+    margin:0 0 16px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{
+    display:block;font-size:0.8rem;font-weight:600;color:#4d4d45;margin-bottom:6px;
+  }
+  .field input, .field select{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;
+    font-size:0.95rem;font-family:'Inter',sans-serif;background:#fdfcf9;color:var(--ink);
+  }
+  .field input:focus, .field select:focus{
+    outline:none;border-color:var(--gold);background:#fff;
+  }
+  .rate-row{display:flex;gap:10px;}
+  .rate-row .field{flex:1;}
+
+  .seg{
+    display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  }
+  .seg button{
+    flex:1;padding:10px 4px;border:none;background:#fdfcf9;font-size:0.78rem;
+    font-weight:600;color:#6b6b63;cursor:pointer;border-right:1px solid var(--line);
+  }
+  .seg button:last-child{border-right:none;}
+  .seg button.active{background:var(--emerald);color:#fff;}
+
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 16px;}
+  .actions button{
+    padding:13px 6px;border:none;border-radius:9px;font-weight:600;font-size:0.86rem;
+    cursor:pointer;letter-spacing:0.2px;color:#fff;
+  }
+  #btnCalc{background:var(--emerald);}
+  #btnCalc:active{background:var(--emerald-deep);}
+  #btnSave{background:var(--gold-deep);}
+  #btnSave:active{background:#5f4313;}
+  #btnDelete{background:#9a4a40;}
+  #btnDelete:active{background:var(--danger);}
+  #btnHistory{background:#3d4a52;}
+  #btnHistory:active{background:#2b353b;}
+
+  .result{display:none;}
+  .result .line{
+    display:flex;justify-content:space-between;padding:9px 0;
+    border-bottom:1px dashed var(--line);font-size:0.9rem;
+  }
+  .result .line span:first-child{color:#6b6b63;}
+  .result .line.total{
+    border-bottom:none;border-top:2px solid var(--emerald);margin-top:6px;padding-top:12px;
+    font-size:1.08rem;font-weight:700;color:var(--emerald-deep);
+  }
+
+  /* ---------- History overlay ---------- */
+  #historyOverlay{
+    position:fixed;inset:0;background:rgba(21,58,48,0.55);
+    display:none;align-items:flex-end;justify-content:center;z-index:90;
+  }
+  #historyPanel{
+    background:var(--paper);width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
+    border-radius:18px 18px 0 0;padding:20px 16px 30px;
+  }
+  #historyPanel .hp-head{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;
+  }
+  #historyPanel h2{
+    font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--emerald-deep);margin:0;
+  }
+  #historyPanel .close-btn{
+    background:none;border:none;font-size:1.3rem;color:#6b6b63;cursor:pointer;line-height:1;
+  }
+  .day-group{margin-bottom:16px;}
+  .day-group .day-title{
+    font-weight:700;font-size:0.85rem;color:var(--gold-deep);margin-bottom:8px;
+    padding-bottom:6px;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;
+  }
+  .entry{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:12px 13px;margin-bottom:8px;font-size:0.83rem;
+  }
+  .entry .e-top{display:flex;justify-content:space-between;margin-bottom:6px;}
+  .entry .e-top .tag{
+    font-weight:700;font-size:0.72rem;padding:2px 8px;border-radius:20px;letter-spacing:.3px;
+  }
+  .tag.gold{background:#f4e6c5;color:var(--gold-deep);}
+  .tag.silver{background:#e6e9eb;color:#4a545a;}
+  .entry .e-total{font-weight:700;color:var(--emerald-deep);}
+  .entry .e-row{display:flex;justify-content:space-between;color:#6b6b63;padding:2px 0;}
+  .empty-note{text-align:center;color:#8a897f;font-size:0.85rem;padding:30px 10px;}
+
+  footer{text-align:center;padding:24px 16px 6px;color:#9b998d;font-size:0.78rem;}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="mark">CT</div>
+    <h2>CM Tharadvala Jewellers</h2>
+    <p>Enter password to continue</p>
+    <input type="password" id="gatePass" placeholder="Password" autocomplete="off">
+    <button id="gateBtn">Unlock</button>
+    <div id="gateError"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="mark">CT</div>
+    <h1>CM Tharadvala Jewellers</h1>
+    <p>JEWELLERY RATE CALCULATOR</p>
+  </header>
+
+  <main id="app">
+    <div class="metal-toggle">
+      <button data-metal="gold" class="active">Gold</button>
+      <button data-metal="silver">Silver</button>
+      <button data-metal="oldurd">Old Urd</button>
+    </div>
+
+    <div class="card">
+      <h3>Item Details</h3>
+      <div class="field">
+        <label>Product Category</label>
+        <input type="text" id="category" placeholder="e.g. Ring, Chain, Bangle">
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="itemDate">
+      </div>
+      <div class="field" id="baseRateTypeField">
+        <label id="baseRateTypeLabel">Base Rate Type</label>
+        <input type="text" id="baseRateTypeDisplay" disabled value="Gold 24KT">
+      </div>
+
+      <div id="oldUrdFields" style="display:none;">
+        <div class="field">
+          <label>Old Urd Type</label>
+          <div class="seg" id="oldUrdSubSeg">
+            <button data-sub="gold" class="active">Gold</button>
+            <button data-sub="silver">Silver</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Gross Weight (grams)</label>
+          <input type="number" id="grossWeight" placeholder="e.g. 20">
+        </div>
+        <div class="field">
+          <label id="deductionLabel">5% of Gross Weight (for reference)</label>
+          <input type="text" id="deductionDisplay" disabled value="0.00 g">
+        </div>
+        <div class="field">
+          <label>Less Weight (grams)</label>
+          <input type="number" id="lessWeight" placeholder="e.g. 0.5">
+        </div>
+        <div class="field">
+          <label>Purity (%)</label>
+          <input type="number" id="purity" placeholder="e.g. 91.6">
+        </div>
+      </div>
+
+      <div class="rate-row">
+        <div class="field">
+          <label>Rate (₹)</label>
+          <input type="number" id="rate" placeholder="e.g. 154000">
+        </div>
+        <div class="field" id="ratePercentField">
+          <label>Rate %</label>
+          <input type="number" id="ratePercent" placeholder="e.g. 92">
+        </div>
+      </div>
+      <div class="field" id="rateTypeField">
+        <label>Rate Type</label>
+        <div class="seg" id="rateTypeSeg">
+          <button data-rt="1" class="active">Per Gram</button>
+          <button data-rt="10">Per 10 Gram</button>
+          <button data-rt="1000">Per 1 KG</button>
+        </div>
+      </div>
+      <div class="field" id="netWeightField">
+        <label>Net Weight (grams)</label>
+        <input type="number" id="netWeight" placeholder="e.g. 12.5">
+      </div>
+      <div class="field" id="makingField">
+        <label id="makingLabel">Making (%)</label>
+        <input type="number" id="making" placeholder="e.g. 12">
+      </div>
+      <div class="field" id="otherField">
+        <label>Other Charges (₹)</label>
+        <input type="number" id="other" placeholder="e.g. 0">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="btnCalc">Calculate</button>
+      <button id="btnSave">Save</button>
+      <button id="btnDelete">Delete Data</button>
+      <button id="btnHistory">Side By (History)</button>
+    </div>
+
+    <div class="card result" id="resultCard">
+      <h3>Breakdown</h3>
+      <div id="resultStandard">
+        <div class="line"><span>Base Value</span><span id="rBase">₹0</span></div>
+        <div class="line"><span id="rMakeLabel">Making Charge</span><span id="rMake">₹0</span></div>
+        <div class="line"><span>Other Charges</span><span id="rOther">₹0</span></div>
+        <div class="line"><span>Subtotal</span><span id="rSub">₹0</span></div>
+        <div class="line"><span>GST (3%)</span><span id="rGst">₹0</span></div>
+        <div class="line total"><span>Total Price</span><span id="rTotal">₹0</span></div>
+      </div>
+      <div id="resultOldUrd" style="display:none;">
+        <div class="line"><span>Gross Weight</span><span id="ouGross">0 g</span></div>
+        <div class="line"><span id="ouDeductLabel">Less 5%</span><span id="ouDeduct">0 g</span></div>
+        <div class="line"><span>Less Weight</span><span id="ouLess">0 g</span></div>
+        <div class="line"><span>Net Weight</span><span id="ouNet">0 g</span></div>
+        <div class="line"><span>Purity Weight</span><span id="ouPure">0 g</span></div>
+        <div class="line"><span>Rate (per gram)</span><span id="ouRateGram">₹0</span></div>
+        <div class="line total"><span>Total Price</span><span id="ouTotal">₹0</span></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>Made by aalop</footer>
+</div>
+
+<div id="historyOverlay">
+  <div id="historyPanel">
+    <div class="hp-head">
+      <h2>CM Tharadvala Jewellers — History</h2>
+      <button class="close-btn" id="closeHistory">&times;</button>
+    </div>
+    <div id="historyBody"></div>
+  </div>
+</div>
+
+<script>
+/* ---------------- Password gate (session only) ---------------- */
+const PASSWORD = "CM";
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+
+function unlock(){
+  gate.style.display='none';
+  app.style.display='block';
+}
+if(sessionStorage.getItem('cmt_auth') === 'yes'){
+  unlock();
+}
+document.getElementById('gateBtn').addEventListener('click', tryUnlock);
+document.getElementById('gatePass').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+function tryUnlock(){
+  const val = document.getElementById('gatePass').value.trim();
+  if(val === PASSWORD){
+    sessionStorage.setItem('cmt_auth','yes');
+    unlock();
+  } else {
+    document.getElementById('gateError').textContent = 'Incorrect password. Try again.';
+  }
+}
+
+/* ---------------- State ---------------- */
+let metal = 'gold';       // gold | silver | oldurd
+let rateType = 1;         // 1, 10, 1000 (grams)
+let oldUrdSub = 'gold';   // gold (5%) | silver (10%), only used when metal === 'oldurd'
+
+const oldUrdSubBtns = document.querySelectorAll('#oldUrdSubSeg button');
+oldUrdSubBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    oldUrdSubBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    oldUrdSub = btn.dataset.sub;
+    updateDeductionDisplay();
+  });
+});
+
+function updateDeductionDisplay(){
+  const pct = oldUrdSub === 'gold' ? 5 : 10;
+  document.getElementById('deductionLabel').textContent = pct + '% of Gross Weight (for reference)';
+  const gross = parseFloat(document.getElementById('grossWeight').value) || 0;
+  const deduction = gross * (pct/100);
+  document.getElementById('deductionDisplay').value = deduction.toFixed(2) + ' g';
+}
+document.getElementById('grossWeight').addEventListener('input', updateDeductionDisplay);
+
+const metalBtns = document.querySelectorAll('.metal-toggle button');
+metalBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    metalBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    metal = btn.dataset.metal;
+    applyMetalUI();
+  });
+});
+
+const rateTypeBtns = document.querySelectorAll('#rateTypeSeg button');
+rateTypeBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    rateTypeBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    rateType = parseInt(btn.dataset.rt,10);
+  });
+});
+
+function applyMetalUI(){
+  const baseRateTypeDisplay = document.getElementById('baseRateTypeDisplay');
+  const baseRateTypeField = document.getElementById('baseRateTypeField');
+  const ratePercentField = document.getElementById('ratePercentField');
+  const rateTypeField = document.getElementById('rateTypeField');
+  const makingLabel = document.getElementById('makingLabel');
+  const making = document.getElementById('making');
+  const oldUrdFields = document.getElementById('oldUrdFields');
+  const netWeightField = document.getElementById('netWeightField');
+  const makingField = document.getElementById('makingField');
+  const otherField = document.getElementById('otherField');
+
+  if(metal === 'gold'){
+    baseRateTypeField.style.display = '';
+    baseRateTypeDisplay.value = 'Gold 24KT';
+    oldUrdFields.style.display = 'none';
+    ratePercentField.style.display = '';
+    rateTypeField.style.display = '';
+    netWeightField.style.display = '';
+    makingField.style.display = '';
+    otherField.style.display = '';
+    makingLabel.textContent = 'Making (%)';
+    making.placeholder = 'e.g. 12';
+  } else if(metal === 'silver'){
+    baseRateTypeField.style.display = '';
+    baseRateTypeDisplay.value = 'Silver 1KG';
+    oldUrdFields.style.display = 'none';
+    ratePercentField.style.display = '';
+    rateTypeField.style.display = '';
+    netWeightField.style.display = '';
+    makingField.style.display = '';
+    otherField.style.display = '';
+    makingLabel.textContent = 'Making (Per Gram ₹)';
+    making.placeholder = 'e.g. 15';
+  } else {
+    baseRateTypeField.style.display = 'none';
+    oldUrdFields.style.display = 'block';
+    ratePercentField.style.display = 'none';
+    rateTypeField.style.display = '';
+    netWeightField.style.display = 'none';
+    makingField.style.display = 'none';
+    otherField.style.display = 'none';
+    updateDeductionDisplay();
+  }
+  document.getElementById('resultCard').style.display = 'none';
+}
+applyMetalUI();
+
+/* ---------------- Calculation ---------------- */
+function num(id){
+  const v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) ? 0 : v;
+}
+function inr(n){
+  return '₹' + n.toLocaleString('en-IN', {maximumFractionDigits:2, minimumFractionDigits:2});
+}
+
+function computeResult(){
+  if(metal === 'oldurd'){
+    const grossWeight = num('grossWeight');
+    const deductPct = oldUrdSub === 'gold' ? 5 : 10;
+    const deduction = grossWeight * (deductPct/100); // shown for reference only, not subtracted
+    const lessWeight = num('lessWeight');
+    const netWeight = grossWeight - lessWeight;
+    const purity = num('purity');
+    const pureWeight = netWeight * (purity/100);
+    const rate = num('rate');
+    const perGramRate = rate / rateType;
+    const total = pureWeight * perGramRate;
+    return {grossWeight, deductPct, deduction, lessWeight, netWeight, purity, pureWeight, perGramRate, total};
+  }
+
+  const rate = num('rate');
+  const ratePercent = document.getElementById('ratePercent').value === '' ? 100 : num('ratePercent');
+  const netWeight = num('netWeight');
+  const making = num('making');
+  const other = num('other');
+
+  const effectiveRate = rate * (ratePercent/100);
+  const perGramRate = effectiveRate / rateType;
+  const baseValue = perGramRate * netWeight;
+
+  let makingCharge = 0;
+  if(metal === 'gold'){
+    makingCharge = baseValue * (making/100);
+  } else {
+    makingCharge = making * netWeight;
+  }
+
+  const subtotal = baseValue + makingCharge + other;
+  const gst = subtotal * 0.03;
+  const total = subtotal + gst;
+
+  return {baseValue, makingCharge, other, subtotal, gst, total, perGramRate};
+}
+
+function showResult(){
+  const r = computeResult();
+  const resultStandard = document.getElementById('resultStandard');
+  const resultOldUrd = document.getElementById('resultOldUrd');
+
+  if(metal === 'oldurd'){
+    resultStandard.style.display = 'none';
+    resultOldUrd.style.display = 'block';
+    document.getElementById('ouGross').textContent = r.grossWeight + ' g';
+    document.getElementById('ouDeductLabel').textContent = r.deductPct + '% of Gross (for reference)';
+    document.getElementById('ouDeduct').textContent = r.deduction.toFixed(2) + ' g';
+    document.getElementById('ouLess').textContent = r.lessWeight + ' g';
+    document.getElementById('ouNet').textContent = r.netWeight.toFixed(2) + ' g';
+    document.getElementById('ouPure').textContent = r.pureWeight.toFixed(2) + ' g';
+    document.getElementById('ouRateGram').textContent = inr(r.perGramRate);
+    document.getElementById('ouTotal').textContent = inr(r.total);
+  } else {
+    resultStandard.style.display = 'block';
+    resultOldUrd.style.display = 'none';
+    document.getElementById('rBase').textContent = inr(r.baseValue);
+    document.getElementById('rMakeLabel').textContent = metal === 'silver' ? 'Making Charge (Per Gram)' : 'Making Charge';
+    document.getElementById('rMake').textContent = inr(r.makingCharge);
+    document.getElementById('rOther').textContent = inr(r.other);
+    document.getElementById('rSub').textContent = inr(r.subtotal);
+    document.getElementById('rGst').textContent = inr(r.gst);
+    document.getElementById('rTotal').textContent = inr(r.total);
+  }
+  document.getElementById('resultCard').style.display = 'block';
+  return r;
+}
+
+document.getElementById('btnCalc').addEventListener('click', showResult);
+
+document.getElementById('btnDelete').addEventListener('click', ()=>{
+  ['category','itemDate','rate','ratePercent','netWeight','making','other','grossWeight','lessWeight','purity'].forEach(id=>{
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('deductionDisplay').value = '0.00 g';
+  document.getElementById('resultCard').style.display = 'none';
+});
+
+/* ---------------- Save / History (5-day auto purge) ---------------- */
+const HIST_KEY = 'cmt_history';
+const FIVE_DAYS_MS = 5*24*60*60*1000;
+
+function loadHistory(){
+  let list = [];
+  try{ list = JSON.parse(localStorage.getItem(HIST_KEY)) || []; }catch(e){ list = []; }
+  const now = Date.now();
+  const fresh = list.filter(item => (now - item.savedAt) < FIVE_DAYS_MS);
+  if(fresh.length !== list.length){
+    localStorage.setItem(HIST_KEY, JSON.stringify(fresh));
+  }
+  return fresh;
+}
+function saveHistory(list){
+  localStorage.setItem(HIST_KEY, JSON.stringify(list));
+}
+
+document.getElementById('btnSave').addEventListener('click', ()=>{
+  const r = showResult();
+  let record = {
+    id: Date.now() + '_' + Math.random().toString(36).slice(2,7),
+    savedAt: Date.now(),
+    metal: metal,
+    category: document.getElementById('category').value || '—',
+    date: document.getElementById('itemDate').value || new Date().toISOString().slice(0,10),
+    rateType: rateType,
+    total: r.total
+  };
+  if(metal === 'oldurd'){
+    record.oldUrdSub = oldUrdSub;
+    record.grossWeight = r.grossWeight;
+    record.deductPct = r.deductPct;
+    record.deduction = r.deduction;
+    record.lessWeight = r.lessWeight;
+    record.netWeight = r.netWeight;
+    record.purity = r.purity;
+    record.pureWeight = r.pureWeight;
+    record.rate = num('rate');
+    record.perGramRate = r.perGramRate;
+  } else {
+    record.rate = num('rate');
+    record.ratePercent = num('ratePercent');
+    record.netWeight = num('netWeight');
+    record.making = num('making');
+    record.other = num('other');
+    record.baseValue = r.baseValue;
+    record.makingCharge = r.makingCharge;
+    record.subtotal = r.subtotal;
+    record.gst = r.gst;
+  }
+  const list = loadHistory();
+  list.push(record);
+  saveHistory(list);
+  alert('Calculation saved to history.');
+});
+
+/* ---------------- History view ---------------- */
+const historyOverlay = document.getElementById('historyOverlay');
+document.getElementById('btnHistory').addEventListener('click', renderHistory);
+document.getElementById('closeHistory').addEventListener('click', ()=> historyOverlay.style.display='none');
+
+function rateTypeLabel(rt){
+  if(rt === 1) return 'Per Gram';
+  if(rt === 10) return 'Per 10 Gram';
+  return 'Per 1 KG';
+}
+
+function renderHistory(){
+  const list = loadHistory();
+  const body = document.getElementById('historyBody');
+  body.innerHTML = '';
+
+  if(list.length === 0){
+    body.innerHTML = '<div class="empty-note">No saved calculations yet. Records are kept for 5 days.</div>';
+    historyOverlay.style.display = 'flex';
+    return;
+  }
+
+  // group by date, chronological order
+  const groups = {};
+  list.forEach(item=>{
+    if(!groups[item.date]) groups[item.date] = [];
+    groups[item.date].push(item);
+  });
+  const dates = Object.keys(groups).sort();
+
+  dates.forEach(date=>{
+    const items = groups[date];
+    const dayTotal = items.reduce((s,i)=>s+i.total,0);
+    const group = document.createElement('div');
+    group.className = 'day-group';
+    const title = document.createElement('div');
+    title.className = 'day-title';
+    title.innerHTML = `<span>${formatDate(date)}</span><span>${inr(dayTotal)}</span>`;
+    group.appendChild(title);
+
+    items.forEach(item=>{
+      const e = document.createElement('div');
+      e.className = 'entry';
+      const tagClass = item.metal === 'gold' ? 'gold' : (item.metal === 'silver' ? 'silver' : '');
+      const tagText = item.metal === 'oldurd' ? ('OLD URD · ' + (item.oldUrdSub||'').toUpperCase()) : item.metal.toUpperCase();
+
+      if(item.metal === 'oldurd'){
+        e.innerHTML = `
+          <div class="e-top">
+            <span><span class="tag ${tagClass}">${tagText}</span> &nbsp;${item.category}</span>
+            <span class="e-total">${inr(item.total)}</span>
+          </div>
+          <div class="e-row"><span>Gross Weight</span><span>${item.grossWeight} g</span></div>
+          <div class="e-row"><span>${item.deductPct}% of Gross (ref. only)</span><span>${item.deduction.toFixed(2)} g</span></div>
+          <div class="e-row"><span>Less Weight</span><span>${item.lessWeight} g</span></div>
+          <div class="e-row"><span>Net Weight (Gross − Less)</span><span>${item.netWeight.toFixed(2)} g</span></div>
+          <div class="e-row"><span>Purity</span><span>${item.purity}%</span></div>
+          <div class="e-row"><span>Purity Weight</span><span>${item.pureWeight.toFixed(2)} g</span></div>
+          <div class="e-row"><span>Rate</span><span>₹${item.rate.toLocaleString('en-IN')} ${rateTypeLabel(item.rateType)}</span></div>
+        `;
+      } else {
+        e.innerHTML = `
+          <div class="e-top">
+            <span><span class="tag ${tagClass}">${tagText}</span> &nbsp;${item.category}</span>
+            <span class="e-total">${inr(item.total)}</span>
+          </div>
+          <div class="e-row"><span>Net Weight</span><span>${item.netWeight} g</span></div>
+          <div class="e-row"><span>Rate</span><span>₹${item.rate.toLocaleString('en-IN')} (${item.ratePercent}%) ${rateTypeLabel(item.rateType)}</span></div>
+          <div class="e-row"><span>Base Value</span><span>${inr(item.baseValue)}</span></div>
+          <div class="e-row"><span>Making</span><span>${inr(item.makingCharge)}</span></div>
+          <div class="e-row"><span>GST (3%)</span><span>${inr(item.gst)}</span></div>
+        `;
+      }
+      group.appendChild(e);
+    });
+    body.appendChild(group);
+  });
+
+  historyOverlay.style.display = 'flex';
+}
+
+function formatDate(d){
+  if(!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+// purge stale history on load
+loadHistory();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
+}
+</script>
+</body>
+</html>
