@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#153a30">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CM Tharadvala">
+<title>CM Tharadvala Jewellers</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<title>Jewellery Calculators</title>
+<meta name="theme-color" content="#1f4a3d">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -229,6 +227,11 @@
   .tag.silver{background:#e6e9eb;color:#4a545a;}
   .entry .e-total{font-weight:700;color:var(--emerald-deep);}
   .entry .e-row{display:flex;justify-content:space-between;color:#6b6b63;padding:2px 0;}
+  .entry-delete{
+    width:100%;margin-top:10px;padding:9px 6px;border:1px solid #d8a79f;border-radius:7px;
+    background:#fbf0ee;color:var(--danger);font-weight:600;font-size:0.78rem;cursor:pointer;
+  }
+  .entry-delete:active{background:#f3ddd9;}
   .empty-note{text-align:center;color:#8a897f;font-size:0.85rem;padding:30px 10px;}
 
   footer{text-align:center;padding:24px 16px 6px;color:#9b998d;font-size:0.78rem;}
@@ -239,7 +242,7 @@
 <div id="gate">
   <div class="gate-card">
     <div class="mark">CT</div>
-    <h2>Jewellery Calculator</h2>
+    <h2>CM Tharadvala Jewellers</h2>
     <p>Enter password to continue</p>
     <input type="password" id="gatePass" placeholder="Password" autocomplete="off">
     <button id="gateBtn">Unlock</button>
@@ -250,7 +253,7 @@
 <div class="wrap">
   <header>
     <div class="mark">CT</div>
-    <h1>JewelleryCalculator</h1>
+    <h1>CM Tharadvala Jewellers</h1>
     <p>JEWELLERY RATE CALCULATOR</p>
   </header>
 
@@ -369,7 +372,7 @@
 <div id="historyOverlay">
   <div id="historyPanel">
     <div class="hp-head">
-      <h2>Jewellers — History</h2>
+      <h2>CM Tharadvala Jewellers — History</h2>
       <button class="close-btn" id="closeHistory">&times;</button>
     </div>
     <div id="historyBody"></div>
@@ -378,7 +381,7 @@
 
 <script>
 /* ---------------- Password gate (session only) ---------------- */
-const PASSWORD = "1";
+const PASSWORD = "CM";
 const gate = document.getElementById('gate');
 const app = document.getElementById('app');
 
@@ -697,6 +700,7 @@ function renderHistory(){
           <div class="e-row"><span>Purity</span><span>${item.purity}%</span></div>
           <div class="e-row"><span>Purity Weight</span><span>${item.pureWeight.toFixed(2)} g</span></div>
           <div class="e-row"><span>Rate</span><span>₹${item.rate.toLocaleString('en-IN')} ${rateTypeLabel(item.rateType)}</span></div>
+          <button class="entry-delete" data-id="${item.id}">Delete this entry</button>
         `;
       } else {
         e.innerHTML = `
@@ -709,11 +713,22 @@ function renderHistory(){
           <div class="e-row"><span>Base Value</span><span>${inr(item.baseValue)}</span></div>
           <div class="e-row"><span>Making</span><span>${inr(item.makingCharge)}</span></div>
           <div class="e-row"><span>GST (3%)</span><span>${inr(item.gst)}</span></div>
+          <button class="entry-delete" data-id="${item.id}">Delete this entry</button>
         `;
       }
       group.appendChild(e);
     });
     body.appendChild(group);
+  });
+
+  body.querySelectorAll('.entry-delete').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!confirm('Delete this saved calculation?')) return;
+      const id = btn.dataset.id;
+      const updated = loadHistory().filter(item => item.id !== id);
+      saveHistory(updated);
+      renderHistory();
+    });
   });
 
   historyOverlay.style.display = 'flex';
@@ -728,10 +743,12 @@ function formatDate(d){
 
 // purge stale history on load
 loadHistory();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
+
+// register service worker so the app can be installed and used offline
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
 }
 </script>
 </body>
