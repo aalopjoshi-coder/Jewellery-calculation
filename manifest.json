@@ -1,19 +1,6 @@
 {
-  "name": "JewelFlow",
-  "short_name": "JewelFlow",
-  "description": "Jewellery Rate Calculator",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#f6f4ee",
-  "theme_color": "#153a30",
-  "icons": [
-    {
-      "src": "jewelflow_logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "name":"CM Tharadvala Jewellers","short_name":"CM Tharadvala",
+  "description":"Jewellery Rate Calculator","start_url":"./","scope":"./",
+  "display":"standalone","orientation":"portrait","background_color":"#f6f4ee","theme_color":"#153a30",
+  "icons":[{"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]
 }
