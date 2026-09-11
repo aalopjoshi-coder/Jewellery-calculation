@@ -758,6 +758,21 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(()=>{});
   });
 }
+
+const toggleBreakdown = document.getElementById("toggleBreakdown");
+const breakdownContent = document.getElementById("breakdownContent");
+
+toggleBreakdown.addEventListener("click", () => {
+  const isOpen = breakdownContent.style.display !== "none";
+
+  if (isOpen) {
+    breakdownContent.style.display = "none";
+    toggleBreakdown.textContent = "Expand";
+  } else {
+    breakdownContent.style.display = "block";
+    toggleBreakdown.textContent = "Collapse";
+  }
+});
 </script>
 </body>
 </html>
