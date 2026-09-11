@@ -190,6 +190,30 @@
     border-bottom:none;border-top:2px solid var(--emerald);margin-top:6px;padding-top:12px;
     font-size:1.08rem;font-weight:700;color:var(--emerald-deep);
   }
+  .result-head{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+  }
+  .result-head h3{margin:0;border:none;padding:0;}
+  .expand-btn{
+    width:36px;height:36px;border:1px solid var(--line);border-radius:8px;
+    background:#fff;cursor:pointer;padding:0;color:var(--emerald-deep);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .expand-btn:active{background:#f6f4ee;}
+  .expand-btn svg{width:18px;height:18px;display:block;}
+  .expand-btn .icon-collapse{display:none;}
+  #resultCard.expanded .expand-btn .icon-expand{display:none;}
+  #resultCard.expanded .expand-btn .icon-collapse{display:block;}
+  #breakdownBackdrop{
+    display:none;position:fixed;inset:0;background:rgba(21,58,48,0.55);z-index:94;
+  }
+  #breakdownBackdrop.show{display:block;}
+  #resultCard.expanded{
+    position:fixed;inset:16px;z-index:95;margin:0;max-width:none;width:auto;
+    overflow:auto;padding:28px 22px;
+  }
+  #resultCard.expanded .line{font-size:1.08rem;padding:14px 0;}
+  #resultCard.expanded .line.total{font-size:1.35rem;padding-top:18px;}
 
   /* ---------- History overlay ---------- */
   #historyOverlay{
@@ -268,7 +292,45 @@
       <h3>Item Details</h3>
       <div class="field">
         <label>Product Category</label>
-        <input type="text" id="category" placeholder="e.g. Ring, Chain, Bangle">
+        <select id="category">
+          <option value="">Select product</option>
+          <option>G Pendant</option>
+          <option>L Pendant</option>
+          <option>G Ring</option>
+          <option>L Ring</option>
+          <option>Chunk</option>
+          <option>G Chain</option>
+          <option>L Chain</option>
+          <option>L Dokiya</option>
+          <option>L lucky</option>
+          <option>G lucky</option>
+          <option>Set</option>
+          <option>Bracelet</option>
+          <option>lagdi</option>
+          <option>Coin</option>
+          <option>Payal</option>
+          <option>Anaket</option>
+          <option>L Buti</option>
+          <option>G Buti</option>
+          <option>G Bali</option>
+          <option>L Bali</option>
+          <option>Rayo</option>
+          <option>Vinchiya</option>
+          <option>Kandoro</option>
+          <option>Juda</option>
+          <option>Vasan</option>
+          <option>M.S.</option>
+          <option>Watch</option>
+          <option>Necklace</option>
+          <option>Divo</option>
+          <option>Tulsi Kayro</option>
+          <option>Mala</option>
+          <option>Kanaji Shrenghar</option>
+          <option>Murti</option>
+          <option>Cow</option>
+          <option>Bangles</option>
+          <option>Kanser</option>
+        </select>
       </div>
       <div class="field">
         <label>Date</label>
@@ -345,15 +407,23 @@
     </div>
 
     <div class="card result" id="resultCard">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="margin:0;border:none;padding:0;">Breakdown</h3>
-    
-        <button id="expandBreakdown" type="button"
-          style="width:36px;height:36px;border:1px solid #e2ded2;border-radius:8px;background:#fff;cursor:pointer;font-size:18px;">
-          ⛶
+      <div class="result-head">
+        <h3>Breakdown</h3>
+        <button id="expandBreakdown" class="expand-btn" type="button" aria-label="Expand breakdown" aria-expanded="false">
+          <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
+          <svg class="icon-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="4 14 10 14 10 20"></polyline>
+            <polyline points="20 10 14 10 14 4"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+          </svg>
         </button>
       </div>
-    
       <div id="resultStandard">
         <div class="line"><span>Base Value</span><span id="rBase">₹0</span></div>
         <div class="line"><span id="rMakeLabel">Making Charge</span><span id="rMake">₹0</span></div>
@@ -377,6 +447,8 @@
 
   <footer>Made by aalopjoshi 8799265178</footer>
 </div>
+
+<div id="breakdownBackdrop"></div>
 
 <div id="historyOverlay">
   <div id="historyPanel">
@@ -500,7 +572,7 @@ function applyMetalUI(){
     otherField.style.display = 'none';
     updateDeductionDisplay();
   }
-  document.getElementById('resultCard').style.display = 'none';
+  hideResult();
 }
 applyMetalUI();
 
@@ -583,14 +655,40 @@ function showResult(){
   return r;
 }
 
+function hideResult(){
+  setBreakdownExpanded(false);
+  document.getElementById('resultCard').style.display = 'none';
+}
+
+function setBreakdownExpanded(on){
+  const card = document.getElementById('resultCard');
+  const btn = document.getElementById('expandBreakdown');
+  const backdrop = document.getElementById('breakdownBackdrop');
+  card.classList.toggle('expanded', on);
+  backdrop.classList.toggle('show', on);
+  btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  btn.setAttribute('aria-label', on ? 'Collapse breakdown' : 'Expand breakdown');
+  document.body.style.overflow = on ? 'hidden' : '';
+}
+
 document.getElementById('btnCalc').addEventListener('click', showResult);
 
+function todayISO(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y + '-' + m + '-' + day;
+}
+document.getElementById('itemDate').value = todayISO();
+
 document.getElementById('btnDelete').addEventListener('click', ()=>{
-  ['category','itemDate','rate','ratePercent','netWeight','making','other','grossWeight','lessWeight','purity'].forEach(id=>{
+  ['category','rate','ratePercent','netWeight','making','other','grossWeight','lessWeight','purity'].forEach(id=>{
     document.getElementById(id).value = '';
   });
+  document.getElementById('itemDate').value = todayISO();
   document.getElementById('deductionDisplay').value = '0.00 g';
-  document.getElementById('resultCard').style.display = 'none';
+  hideResult();
 });
 
 /* ---------------- Save / History (5-day auto purge) ---------------- */
@@ -618,7 +716,7 @@ document.getElementById('btnSave').addEventListener('click', ()=>{
     savedAt: Date.now(),
     metal: metal,
     category: document.getElementById('category').value || '—',
-    date: document.getElementById('itemDate').value || new Date().toISOString().slice(0,10),
+    date: document.getElementById('itemDate').value || todayISO(),
     rateType: rateType,
     total: r.total
   };
@@ -672,16 +770,16 @@ function renderHistory(){
     return;
   }
 
-  // group by date, chronological order
+  // group by date, newest first
   const groups = {};
   list.forEach(item=>{
     if(!groups[item.date]) groups[item.date] = [];
     groups[item.date].push(item);
   });
-  const dates = Object.keys(groups).sort();
+  const dates = Object.keys(groups).sort().reverse();
 
   dates.forEach(date=>{
-    const items = groups[date];
+    const items = groups[date].slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
     const dayTotal = items.reduce((s,i)=>s+i.total,0);
     const group = document.createElement('div');
     group.className = 'day-group';
@@ -760,35 +858,14 @@ if('serviceWorker' in navigator){
   });
 }
 
-const expandBtn = document.getElementById("expandBreakdown");
-const overlay = document.getElementById("breakdownOverlay");
-const closeBtn = document.getElementById("closeBreakdown");
-const cloneBox = document.getElementById("breakdownClone");
-
-expandBtn.addEventListener("click", () => {
-  const activeResult =
-    document.getElementById("resultStandard").style.display !== "none"
-      ? document.getElementById("resultStandard")
-      : document.getElementById("resultOldUrd");
-
-  cloneBox.innerHTML = activeResult.innerHTML;
-  overlay.style.display = "flex";
+document.getElementById('expandBreakdown').addEventListener('click', ()=>{
+  const card = document.getElementById('resultCard');
+  setBreakdownExpanded(!card.classList.contains('expanded'));
 });
-
-closeBtn.addEventListener("click", () => {
-  overlay.style.display = "none";
-});
-
-overlay.addEventListener("click", (e) => {
-  if (e.target === overlay) overlay.style.display = "none";
+document.getElementById('breakdownBackdrop').addEventListener('click', ()=> setBreakdownExpanded(false));
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape') setBreakdownExpanded(false);
 });
 </script>
-<div id="breakdownOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:16px;">
-  <div id="breakdownModal" style="background:#fff;width:100%;max-width:520px;max-height:90vh;overflow:auto;border-radius:16px;padding:20px;position:relative;">
-    <button id="closeBreakdown" style="position:absolute;top:14px;right:14px;border:none;background:none;font-size:22px;cursor:pointer;">✕</button>
-    <h2 style="margin:0 0 18px;color:#153a30;">Breakdown</h2>
-    <div id="breakdownClone"></div>
-  </div>
-</div>
 </body>
 </html>
