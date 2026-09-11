@@ -347,29 +347,30 @@
     <div class="card result" id="resultCard">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h3 style="margin:0;border:none;padding:0;">Breakdown</h3>
-        <button id="toggleBreakdown" type="button"
-          style="padding:6px 12px;border:1px solid #e2ded2;border-radius:6px;background:#fff;cursor:pointer;font-weight:600;">
-          Collapse
+    
+        <button id="expandBreakdown" type="button"
+          style="width:36px;height:36px;border:1px solid #e2ded2;border-radius:8px;background:#fff;cursor:pointer;font-size:18px;">
+          ⛶
         </button>
       </div>
-      <div id="breakdownContent">
-        <div id="resultStandard">
-          <div class="line"><span>Base Value</span><span id="rBase">₹0</span></div>
-          <div class="line"><span id="rMakeLabel">Making Charge</span><span id="rMake">₹0</span></div>
-          <div class="line"><span>Other Charges</span><span id="rOther">₹0</span></div>
-          <div class="line"><span>Subtotal</span><span id="rSub">₹0</span></div>
-          <div class="line"><span>GST (3%)</span><span id="rGst">₹0</span></div>
-          <div class="line total"><span>Total Price</span><span id="rTotal">₹0</span></div>
-        </div>
-        <div id="resultOldUrd" style="display:none;">
-          <div class="line"><span>Gross Weight</span><span id="ouGross">0 g</span></div>
-          <div class="line"><span id="ouDeductLabel">Less 5%</span><span id="ouDeduct">0 g</span></div>
-          <div class="line"><span>Less Weight</span><span id="ouLess">0 g</span></div>
-          <div class="line"><span>Net Weight</span><span id="ouNet">0 g</span></div>
-          <div class="line"><span>Purity Weight</span><span id="ouPure">0 g</span></div>
-          <div class="line"><span>Rate (per gram)</span><span id="ouRateGram">₹0</span></div>
-          <div class="line total"><span>Total Price</span><span id="ouTotal">₹0</span></div>
-        </div>
+    
+      <div id="resultStandard">
+        <div class="line"><span>Base Value</span><span id="rBase">₹0</span></div>
+        <div class="line"><span id="rMakeLabel">Making Charge</span><span id="rMake">₹0</span></div>
+        <div class="line"><span>Other Charges</span><span id="rOther">₹0</span></div>
+        <div class="line"><span>Subtotal</span><span id="rSub">₹0</span></div>
+        <div class="line"><span>GST (3%)</span><span id="rGst">₹0</span></div>
+        <div class="line total"><span>Total Price</span><span id="rTotal">₹0</span></div>
+      </div>
+    
+      <div id="resultOldUrd" style="display:none;">
+        <div class="line"><span>Gross Weight</span><span id="ouGross">0 g</span></div>
+        <div class="line"><span id="ouDeductLabel">Less 5%</span><span id="ouDeduct">0 g</span></div>
+        <div class="line"><span>Less Weight</span><span id="ouLess">0 g</span></div>
+        <div class="line"><span>Net Weight</span><span id="ouNet">0 g</span></div>
+        <div class="line"><span>Purity Weight</span><span id="ouPure">0 g</span></div>
+        <div class="line"><span>Rate (per gram)</span><span id="ouRateGram">₹0</span></div>
+        <div class="line total"><span>Total Price</span><span id="ouTotal">₹0</span></div>
       </div>
     </div>
   </main>
@@ -759,20 +760,35 @@ if('serviceWorker' in navigator){
   });
 }
 
-const toggleBreakdown = document.getElementById("toggleBreakdown");
-const breakdownContent = document.getElementById("breakdownContent");
+const expandBtn = document.getElementById("expandBreakdown");
+const overlay = document.getElementById("breakdownOverlay");
+const closeBtn = document.getElementById("closeBreakdown");
+const cloneBox = document.getElementById("breakdownClone");
 
-toggleBreakdown.addEventListener("click", () => {
-  const isOpen = breakdownContent.style.display !== "none";
+expandBtn.addEventListener("click", () => {
+  const activeResult =
+    document.getElementById("resultStandard").style.display !== "none"
+      ? document.getElementById("resultStandard")
+      : document.getElementById("resultOldUrd");
 
-  if (isOpen) {
-    breakdownContent.style.display = "none";
-    toggleBreakdown.textContent = "Expand";
-  } else {
-    breakdownContent.style.display = "block";
-    toggleBreakdown.textContent = "Collapse";
-  }
+  cloneBox.innerHTML = activeResult.innerHTML;
+  overlay.style.display = "flex";
+});
+
+closeBtn.addEventListener("click", () => {
+  overlay.style.display = "none";
+});
+
+overlay.addEventListener("click", (e) => {
+  if (e.target === overlay) overlay.style.display = "none";
 });
 </script>
+<div id="breakdownOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:16px;">
+  <div id="breakdownModal" style="background:#fff;width:100%;max-width:520px;max-height:90vh;overflow:auto;border-radius:16px;padding:20px;position:relative;">
+    <button id="closeBreakdown" style="position:absolute;top:14px;right:14px;border:none;background:none;font-size:22px;cursor:pointer;">✕</button>
+    <h2 style="margin:0 0 18px;color:#153a30;">Breakdown</h2>
+    <div id="breakdownClone"></div>
+  </div>
+</div>
 </body>
 </html>
