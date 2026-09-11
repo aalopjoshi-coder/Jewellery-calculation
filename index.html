@@ -345,23 +345,31 @@
     </div>
 
     <div class="card result" id="resultCard">
-      <h3>Breakdown</h3>
-      <div id="resultStandard">
-        <div class="line"><span>Base Value</span><span id="rBase">₹0</span></div>
-        <div class="line"><span id="rMakeLabel">Making Charge</span><span id="rMake">₹0</span></div>
-        <div class="line"><span>Other Charges</span><span id="rOther">₹0</span></div>
-        <div class="line"><span>Subtotal</span><span id="rSub">₹0</span></div>
-        <div class="line"><span>GST (3%)</span><span id="rGst">₹0</span></div>
-        <div class="line total"><span>Total Price</span><span id="rTotal">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="margin:0;border:none;padding:0;">Breakdown</h3>
+        <button id="toggleBreakdown" type="button"
+          style="padding:6px 12px;border:1px solid #e2ded2;border-radius:6px;background:#fff;cursor:pointer;font-weight:600;">
+          Collapse
+        </button>
       </div>
-      <div id="resultOldUrd" style="display:none;">
-        <div class="line"><span>Gross Weight</span><span id="ouGross">0 g</span></div>
-        <div class="line"><span id="ouDeductLabel">Less 5%</span><span id="ouDeduct">0 g</span></div>
-        <div class="line"><span>Less Weight</span><span id="ouLess">0 g</span></div>
-        <div class="line"><span>Net Weight</span><span id="ouNet">0 g</span></div>
-        <div class="line"><span>Purity Weight</span><span id="ouPure">0 g</span></div>
-        <div class="line"><span>Rate (per gram)</span><span id="ouRateGram">₹0</span></div>
-        <div class="line total"><span>Total Price</span><span id="ouTotal">₹0</span></div>
+      <div id="breakdownContent">
+        <div id="resultStandard">
+          <div class="line"><span>Base Value</span><span id="rBase">₹0</span></div>
+          <div class="line"><span id="rMakeLabel">Making Charge</span><span id="rMake">₹0</span></div>
+          <div class="line"><span>Other Charges</span><span id="rOther">₹0</span></div>
+          <div class="line"><span>Subtotal</span><span id="rSub">₹0</span></div>
+          <div class="line"><span>GST (3%)</span><span id="rGst">₹0</span></div>
+          <div class="line total"><span>Total Price</span><span id="rTotal">₹0</span></div>
+        </div>
+        <div id="resultOldUrd" style="display:none;">
+          <div class="line"><span>Gross Weight</span><span id="ouGross">0 g</span></div>
+          <div class="line"><span id="ouDeductLabel">Less 5%</span><span id="ouDeduct">0 g</span></div>
+          <div class="line"><span>Less Weight</span><span id="ouLess">0 g</span></div>
+          <div class="line"><span>Net Weight</span><span id="ouNet">0 g</span></div>
+          <div class="line"><span>Purity Weight</span><span id="ouPure">0 g</span></div>
+          <div class="line"><span>Rate (per gram)</span><span id="ouRateGram">₹0</span></div>
+          <div class="line total"><span>Total Price</span><span id="ouTotal">₹0</span></div>
+        </div>
       </div>
     </div>
   </main>
